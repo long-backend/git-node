@@ -1,0 +1,102 @@
+<h1 class="text-center">Cố gắng nhanh hết đau</h1>
+<h1 class="text-center"> Mục đã xóa </h1>
+<a href="/me/stored/courses"><h2 class="text-center"> Quay lại</h2></a>
+
+<table class="table mt-4">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">name</th>
+      <th scope="col">description</th>
+      <th scope="col" colspan="2">hobby</th>
+    </tr>
+  </thead>
+  {{#each courses}}
+  <tbody>
+    <tr>
+      <th scope="row">{{ sum @index 1}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.hobby}}</td>
+      <td>
+      <a href="" data-id="{{this._id}}" class ="btn btn-link btn-restore">restore</a>
+      
+      <a href="" data-id="{{this._id}}"  class="btn btn-primary" data-toggle="modal" data-target="#delete-course-modal">
+  Delete
+</a>
+
+      </td>
+
+    </tr>
+  </tbody>
+  {{else}}
+  <tr>
+    <td colspan="5">
+     Thùng rác trống
+     <a href="/me/stored/courses"> Danh sách khóa học</a>
+
+    </td>
+  </tr>
+  {{/each}}
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="delete-course-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        You have sure delete permantly
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button id="btn-delete-course" type="button" class="btn btn-primary">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Delete hidden form--}}
+<form name="delete-course-form" method="POST" ></form>
+{{!-- Restore hidden form--}}
+ <form name="restore-course-form" method="POST" ></form>
+<script>
+    
+document.addEventListener('DOMContentLoaded',function(){
+var courseId;
+var deleteForm = document.forms['delete-course-form'];
+var restoreForm = document.forms['restore-course-form'];
+
+ var btnDeleteCourse= document.getElementById('btn-delete-course');
+var restoreBtn= $('.btn-restore');
+
+    //when dialog confirm clicked
+$('#delete-course-modal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) 
+  courseId = button.data('id') 
+  console.log(courseId);
+  });
+ 
+    console.log(btnDeleteCourse);
+    
+    btnDeleteCourse.onclick= function(){
+        console.log(courseId);
+        deleteForm.action = '/courses/'+ courseId + '/force?_method=DELETE';
+        deleteForm.submit();
+    }
+    restoreBtn.click(function(e){
+        e.preventDefault();
+        var courseId=$(this).data('id');
+        restoreForm.action = '/courses/'+ courseId + '/restore?_method=PATCH';
+        restoreForm.submit();
+    })
+    
+});
+
+
+</script>
